@@ -31,7 +31,7 @@ Bu proje, modern web geliştirmenin temel taşları kullanılarak hayata geçiri
 Bu projeyi yerel makinenizde çalıştırmak için herhangi bir derleme veya kurulum adımına ihtiyacınız yoktur:
 
 1. Bu repoyu klonlayın veya ZIP olarak indirin.  
-2. `index.html` dosyasını doğrudan favori web tarayıcınızda açın.  
+2. `oyun-fikri-uretici.html` dosyasını doğrudan favori web tarayıcınızda açın.  
 3. Hepsi bu kadar! **"FİKİR ÜRET"** butonuna basarak yeni konseptler keşfetmeye başlayabilirsiniz.
 
 ---
