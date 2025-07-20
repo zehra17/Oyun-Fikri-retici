@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rastgele Oyun Fikri Üretici</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Press Start 2P & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- Font Awesome (Ikonlar için) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+    <style>
+        /* Retro oyun teması için özel stiller */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a1a2e; /* Koyu mavi-mor arka plan */
+            color: #e0e0e0;
+            background-image: radial-gradient(#e0e0e0 1px, transparent 0);
+            background-size: 30px 30px;
+            background-position: -19px -19px;
+        }
+        .pixel-font {
+            font-family: 'Press Start 2P', cursive;
+        }
+        /* Buton için özel gölge ve animasyon */
+        .btn-pixel {
+            background-color: #f92572;
+            color: white;
+            border: 3px solid #1a1a2e;
+            box-shadow: 5px 5px 0px #16213e;
+            transition: all 0.1s ease-in-out;
+        }
+        .btn-pixel:active {
+            transform: translateY(5px) translateX(5px);
+            box-shadow: 0px 0px 0px #16213e;
+        }
+        /* Fikir kutusu için animasyon */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-2xl text-center">
+        
+        <!-- Başlık -->
+        <h1 class="pixel-font text-3xl md:text-4xl text-white mb-4">Oyun Fikri</h1>
+        <h2 class="pixel-font text-3xl md:text-4xl text-yellow-300 mb-12">Üretici</h2>
+
+        <!-- Fikir Görüntüleme Alanı -->
+        <div id="idea-container" class="bg-black/50 border-2 border-dashed border-gray-600 rounded-lg p-8 min-h-[150px] flex items-center justify-center mb-10 transition-all duration-300">
+            <p id="game-idea" class="text-2xl font-semibold text-cyan-300 leading-relaxed">
+                Yeni bir oyun fikri için butona bas!
+            </p>
+        </div>
+
+        <!-- Buton -->
+        <button id="generate-btn" class="btn-pixel pixel-font text-lg py-4 px-8 rounded-md">
+            <i class="fas fa-dice-d20 mr-2"></i>
+            FİKİR ÜRET
+        </button>
+
+    </div>
+
+    <script>
+        // HTML elementlerini seçme
+        const generateBtn = document.getElementById('generate-btn');
+        const gameIdeaText = document.getElementById('game-idea');
+        const ideaContainer = document.getElementById('idea-container');
+
+        // Oyun fikri için kelime havuzları (DENGELENMİŞ)
+        const karakterler = [
+            // Ciddi & Karanlık
+            "hafızasını kaybetmiş bir dedektifin", "kıyametten kurtulmuş son kütüphanecinin", "yasaklı bir büyücünün",
+            "bir mega şirketin casusunun", "genetik olarak geliştirilmiş bir askerin", "vicdan azabı çeken bir suikastçının",
+            "lanetli bir hazinenin koruyucusunun", "cyborg bir ödül avcısının", "bir direnişin son liderinin",
+            "kendi yarattığı canavardan kaçan bir bilim insanının",
+            // Fantastik & Epik
+            "kibirli bir ejderhanın", "şarkı söyleyen bir kılıcın", "sadece geriye doğru yürüyebilen bir şövalyenin",
+            "gölgelerden korkan bir canavarın", "fazla mesai yapan bir iskeletin", "bir fincan kahvenin içindeki bir tanrının",
+            // Çocuksu & Eğlenceli
+            "utangaç bir hayaletin", "emekli bir süper kahramanın", "zaman yolcusu bir kedinin", "konuşan bir tostun",
+            "bir grup organize sincabın", "uyurgezer bir korsanın"
+        ];
+
+        const mekanlar = [
+            // Ciddi & Karanlık
+            "siberpunk bir metropolde", "terk edilmiş bir akıl hastanesinde", "bir yıldız gemisinin enkazında",
+            "nükleer serpinti altındaki bir şehirde", "bir suç imparatorluğunun gökdeleninde", "unutulmuş anılardan yapılmış bir adada",
+            "yankılarla dolu bir mağarada", "bir ressamın kabusunun içinde",
+            // Fantastik & Epik
+            "suyun altındaki bir krallıkta", "bulutların üzerindeki bir kalede", "sürekli şekil değiştiren bir labirentte",
+            "dev bir mantar ormanında", "bir kum saatinin içinde", "yerçekiminin sürekli değiştiği bir uzay istasyonunda",
+            // Çocuksu & Eğlenceli
+            "terk edilmiş bir lunaparkta", "canlı tablolarla dolu bir müzede", "sadece tatlılardan oluşmuş bir gezegende",
+            "kayıp çorapların gittiği bir boyutta"
+        ];
+
+        const turler = [
+            // Ciddi & Karanlık
+            "bir psikolojik korku oyunu.", "bir taktiksel RPG oyunu.", "bir politik simülasyon oyunu.",
+            "bir dedektiflik oyunu.", "bir 4X strateji oyunu.",
+            // Standart
+            "bir bulmaca oyunu.", "bir hayatta kalma oyunu.", "bir gizlilik oyunu.",
+            "bir ritim oyunu.", "bir strateji oyunu.", "bir simülasyon oyunu.",
+            "bir platform oyunu.", "bir macera oyunu.", "bir sosyal çıkarım oyunu.",
+            "bir kule savunma oyunu.", "bir metin tabanlı macera oyunu."
+        ];
+
+        const hedefler = [
+            // Ciddi & Karanlık
+            "amacın bir komployu ortaya çıkarmak olduğu", "amacın kayıp bir teknolojiyi geri getirmek olduğu",
+            "amacın bir salgını durdurmak olduğu", "amacın masumiyetini kanıtlamak olduğu",
+            "amacın ailesinin intikamını almak olduğu", "amacın çökmekte olan bir imparatorluğu kurtarmak olduğu",
+            "amacın tarihin akışını değiştirmek olduğu", "amacın yasak bir bilgiyi korumak olduğu",
+            // Fantastik & Epik
+            "amacın uyuyan bir devi uyandırmadan hazineyi çalmak olduğu", "amacın güneşi çalan hırsızı yakalamak olduğu",
+            "amacın bir yağmur damlasını buharlaşmadan okyanusa ulaştırmak olduğu", "amacın tarihteki en büyük yazım hatasını düzeltmek olduğu",
+            // Çocuksu & Eğlenceli
+            "amacın en büyük sandviçi yapmak olduğu", "amacın dünyanın en kötü şarkısını bestelemek olduğu",
+            "amacın en sıkıcı partiyi organize etmek olduğu", "amacın renkleri çalınmış bir dünyayı yeniden boyamak olduğu",
+            "amacın mükemmel çayı demlemek olduğu"
+        ];
+
+        // Rastgele bir eleman seçen fonksiyon
+        function getRandomElement(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        // Fikir üretme fonksiyonu
+        function generateGameIdea() {
+            // Her havuzdan rastgele bir parça seç
+            const karakter = getRandomElement(karakterler);
+            const mekan = getRandomElement(mekanlar);
+            const hedef = getRandomElement(hedefler);
+            const tur = getRandomElement(turler);
+
+            // Cümleyi oluştur
+            const finalIdea = `${karakter} ${mekan}, ${hedef} ${tur}`;
+
+            // Fikri ekranda göster
+            gameIdeaText.textContent = finalIdea;
+
+            // Animasyon için class ekleyip kaldırma
+            ideaContainer.classList.remove('fade-in');
+            // void... -> Bu, tarayıcının animasyonu yeniden başlatmasını sağlar
+            void ideaContainer.offsetWidth; 
+            ideaContainer.classList.add('fade-in');
+        }
+
+        // Butona tıklama olayını dinleme
+        generateBtn.addEventListener('click', generateGameIdea);
+
+    </script>
+</body>
+</html>
